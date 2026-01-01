@@ -1,0 +1,61 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Flask
+instance/
+.webassets-cache
+
+# Environment variables
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Uploads folder (user-uploaded files)
+uploads/
+*.pdf
+*.txt
+!requirements.txt
+
+# Temporary scripts
+create_academic_table.py
+fix_encoding.py
+generate_burnout_dataset.py
+train_burnout_model.py
+
+# Architecture diagram generator (keep SVG, exclude generator)
+create_architecture_diagram*.py
+

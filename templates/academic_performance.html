@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Performance Tracker - LearnSmart AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <h1>LearnSmart AI</h1>
+            </div>
+            <div class="nav-links">
+                <a href="{{ url_for('dashboard') }}">Dashboard</a>
+                <a href="{{ url_for('study_pattern') }}">Study Pattern</a>
+                <a href="{{ url_for('academic_performance') }}">Academic Performance</a>
+                <a href="{{ url_for('chatbot') }}">AI Chatbot</a>
+                <a href="{{ url_for('history') }}">History</a>
+                <span>Welcome, {{ name }}!</span>
+                <a href="{{ url_for('logout') }}">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Academic Performance Section -->
+    <section class="academic-performance-section">
+        <div class="container">
+            <h2 class="section-title">Academic Performance Tracker</h2>
+            <p class="section-subtitle">Track and compare your performance across exams and subjects</p>
+            
+            {% if error %}
+            <div class="alert alert-error">{{ error }}</div>
+            {% endif %}
+            
+            <!-- Add Data Form -->
+            <div class="academic-form-container">
+                <h3>Add Academic Performance Record</h3>
+                <form id="academicForm" class="academic-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="class_semester">Class / Semester *</label>
+                            <input type="text" id="class_semester" name="class_semester" required 
+                                   placeholder="e.g., Class 11, Semester 1">
+                        </div>
+                        <div class="form-group">
+                            <label for="exam_name">Exam Name *</label>
+                            <input type="text" id="exam_name" name="exam_name" required 
+                                   placeholder="e.g., Terminal 1, PT-1, IA-1">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="subject_name">Subject Name *</label>
+                            <input type="text" id="subject_name" name="subject_name" required 
+                                   placeholder="e.g., English, Maths, Science">
+                        </div>
+                        <div class="form-group">
+                            <label for="marks_scored">Marks Scored *</label>
+                            <input type="number" id="marks_scored" name="marks_scored" 
+                                   step="0.01" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="total_marks">Total Marks *</label>
+                            <input type="number" id="total_marks" name="total_marks" 
+                                   step="0.01" min="1" required>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Add Record</button>
+                </form>
+                <div id="message" class="message"></div>
+            </div>
+            
+            <!-- Matrix Tables Display -->
+            <div id="performance-tables" class="performance-tables-container">
+                <p class="loading-text">Loading academic performance data...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 LearnSmart AI. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/academic_performance.js') }}"></script>
+</body>
+</html>
+
+

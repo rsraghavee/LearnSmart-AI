@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History - LearnSmart AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <h1>LearnSmart AI</h1>
+            </div>
+            <div class="nav-links">
+                <a href="{{ url_for('dashboard') }}">Dashboard</a>
+                <a href="{{ url_for('study_pattern') }}">Study Pattern</a>
+                <a href="{{ url_for('academic_performance') }}">Academic Performance</a>
+                <a href="{{ url_for('chatbot') }}">AI Chatbot</a>
+                <a href="{{ url_for('history') }}">History</a>
+                <span>Welcome, {{ name }}!</span>
+                <a href="{{ url_for('logout') }}">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- History Section -->
+    <section class="history-section">
+        <div class="container">
+            <h2 class="section-title">My History</h2>
+            <p class="section-subtitle">View your study patterns and burnout predictions</p>
+            
+            <!-- Tabs Navigation -->
+            <div class="history-tabs">
+                <button class="tab-button active" data-tab="study-patterns">
+                    📊 Study Patterns
+                </button>
+                <button class="tab-button" data-tab="burnout-predictions">
+                    ⚠️ Burnout Predictions
+                </button>
+            </div>
+            
+            <!-- Study Patterns Tab -->
+            <div id="study-patterns-tab" class="tab-content active">
+                <div class="history-card">
+                    <div class="history-header">
+                        <h3>Study Pattern History</h3>
+                        <span id="studyPatternsCount" class="count-badge">Loading...</span>
+                    </div>
+                    <div class="table-container">
+                        <table class="history-table" id="studyPatternsTable">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Study Hours</th>
+                                    <th>Sleep Hours</th>
+                                    <th>Break Time</th>
+                                    <th>Screen Time</th>
+                                    <th>Mood</th>
+                                    <th>Created At</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studyPatternsBody">
+                                <tr>
+                                    <td colspan="7" class="loading-cell">Loading data...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Burnout Predictions Tab -->
+            <div id="burnout-predictions-tab" class="tab-content">
+                <div class="history-card">
+                    <div class="history-header">
+                        <h3>Burnout Prediction History</h3>
+                        <span id="burnoutPredictionsCount" class="count-badge">Loading...</span>
+                    </div>
+                    <div class="table-container">
+                        <table class="history-table" id="burnoutPredictionsTable">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Study Hours</th>
+                                    <th>Sleep Hours</th>
+                                    <th>Break Time</th>
+                                    <th>Screen Time</th>
+                                    <th>Mood Score</th>
+                                    <th>Predicted Risk</th>
+                                    <th>Confidence</th>
+                                    <th>Created At</th>
+                                </tr>
+                            </thead>
+                            <tbody id="burnoutPredictionsBody">
+                                <tr>
+                                    <td colspan="9" class="loading-cell">Loading data...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 LearnSmart AI. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/history.js') }}"></script>
+</body>
+</html>
+

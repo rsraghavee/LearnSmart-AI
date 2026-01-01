@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - LearnSmart AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <h1>LearnSmart AI</h1>
+            </div>
+            <div class="nav-links">
+                <a href="{{ url_for('dashboard') }}">Dashboard</a>
+                <a href="{{ url_for('study_pattern') }}">Study Pattern</a>
+                <a href="{{ url_for('academic_performance') }}">Academic Performance</a>
+                <a href="{{ url_for('chatbot') }}">AI Chatbot</a>
+                <a href="{{ url_for('history') }}">History</a>
+                <span>Welcome, {{ name or username }}!</span>
+                <a href="{{ url_for('logout') }}">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Content -->
+    <section class="dashboard-section">
+        <div class="container">
+            <h2 class="dashboard-title">My Learning Dashboard</h2>
+            <p class="welcome-message">Welcome back, {{ name or username }}! Continue your learning journey.</p>
+            
+            {% if error %}
+            <div class="alert alert-error">{{ error }}</div>
+            {% endif %}
+            
+            <!-- Productivity Score Card -->
+            {% if productivity_score %}
+            <div class="productivity-score-card">
+                <div class="score-header">
+                    <h3>📊 Productivity Score</h3>
+                    <span class="score-date">Last updated: {{ productivity_score.study_date }}</span>
+                </div>
+                <div class="score-main">
+                    <div class="total-score">
+                        <div class="score-circle" data-score="{{ productivity_score.total_score }}">
+                            <span class="score-value">{{ productivity_score.total_score }}</span>
+                            <span class="score-label">/ 100</span>
+                        </div>
+                        <p class="score-description">Your overall productivity score based on study patterns</p>
+                    </div>
+                    <div class="score-breakdown">
+                        <h4>Score Breakdown</h4>
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">
+                                <span>📚 Study Hours</span>
+                                <span class="breakdown-hours">{{ productivity_score.study_hours }}h</span>
+                            </div>
+                            <div class="breakdown-bar">
+                                <div class="breakdown-fill" style="width: {{ (productivity_score.study_score / 30) * 100 }}%"></div>
+                            </div>
+                            <span class="breakdown-score">{{ productivity_score.study_score }}/30</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">
+                                <span>😴 Sleep Hours</span>
+                                <span class="breakdown-hours">{{ productivity_score.sleep_hours }}h</span>
+                            </div>
+                            <div class="breakdown-bar">
+                                <div class="breakdown-fill" style="width: {{ (productivity_score.sleep_score / 30) * 100 }}%"></div>
+                            </div>
+                            <span class="breakdown-score">{{ productivity_score.sleep_score }}/30</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">
+                                <span>☕ Break Time</span>
+                                <span class="breakdown-hours">{{ productivity_score.break_time }}h</span>
+                            </div>
+                            <div class="breakdown-bar">
+                                <div class="breakdown-fill" style="width: {{ (productivity_score.break_score / 20) * 100 }}%"></div>
+                            </div>
+                            <span class="breakdown-score">{{ productivity_score.break_score }}/20</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">
+                                <span>💻 Screen Time</span>
+                                <span class="breakdown-hours">{{ productivity_score.screen_time }}h</span>
+                            </div>
+                            <div class="breakdown-bar">
+                                <div class="breakdown-fill" style="width: {{ (productivity_score.screen_score / 20) * 100 }}%"></div>
+                            </div>
+                            <span class="breakdown-score">{{ productivity_score.screen_score }}/20</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="score-footer">
+                    <a href="{{ url_for('study_pattern') }}" class="btn btn-secondary">Update Study Data</a>
+                </div>
+            </div>
+            {% else %}
+            <div class="productivity-score-card no-data">
+                <div class="score-header">
+                    <h3>📊 Productivity Score</h3>
+                </div>
+                <div class="no-score-message">
+                    <p>No study data available yet.</p>
+                    <p>Start tracking your study patterns to see your productivity score!</p>
+                    <a href="{{ url_for('study_pattern') }}" class="btn btn-primary">Add Study Data</a>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Burnout Risk Prediction Card -->
+            {% if burnout_prediction %}
+            <div class="burnout-risk-card risk-{{ burnout_prediction.predicted_risk.lower() }}">
+                <div class="risk-header">
+                    <h3>⚠️ Burnout Risk Prediction</h3>
+                    <span class="risk-date">Last updated: {{ burnout_prediction.study_date }}</span>
+                </div>
+                <div class="risk-main">
+                    <div class="risk-level">
+                        <div class="risk-badge risk-{{ burnout_prediction.predicted_risk.lower() }}">
+                            <span class="risk-label">{{ burnout_prediction.predicted_risk }} Risk</span>
+                        </div>
+                        <div class="risk-confidence">
+                            <span class="confidence-label">Prediction Strength:</span>
+                            <span class="confidence-value">{{ burnout_prediction.prediction_strength or burnout_prediction.confidence }}%</span>
+                        </div>
+                    </div>
+                    <div class="risk-description">
+                        {% if burnout_prediction.explanation %}
+                        <p>{{ burnout_prediction.explanation }}</p>
+                        {% elif burnout_prediction.predicted_risk == 'High' %}
+                        <p><strong>High Risk Detected:</strong> Your study patterns indicate a high risk of burnout. Consider reducing study hours, improving sleep, and taking more breaks.</p>
+                        {% elif burnout_prediction.predicted_risk == 'Medium' %}
+                        <p><strong>Medium Risk:</strong> Some patterns may lead to burnout. Monitor your study habits and maintain a healthy balance.</p>
+                        {% else %}
+                        <p><strong>Low Risk:</strong> Your study patterns look healthy. Keep maintaining a good balance between study, rest, and self-care.</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="risk-footer">
+                    <a href="{{ url_for('study_pattern') }}" class="btn btn-secondary">Update Study Data</a>
+                </div>
+            </div>
+            {% else %}
+            <div class="burnout-risk-card no-data">
+                <div class="risk-header">
+                    <h3>⚠️ Burnout Risk Prediction</h3>
+                </div>
+                <div class="no-prediction-message">
+                    <p>No prediction available yet.</p>
+                    <p>Add study data to get your burnout risk prediction using machine learning!</p>
+                    <a href="{{ url_for('study_pattern') }}" class="btn btn-primary">Add Study Data</a>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Study Suggestions and Insights -->
+            {% if study_suggestions %}
+            <div class="suggestions-container">
+                <div class="suggestions-header">
+                    <h3>💡 Personalized Study Suggestions</h3>
+                    <p class="suggestions-subtitle">Actionable recommendations based on your study patterns</p>
+                </div>
+                <div class="suggestions-list">
+                    {% for suggestion in study_suggestions %}
+                    <div class="suggestion-card priority-{{ suggestion.priority }} category-{{ suggestion.category }}">
+                        <div class="suggestion-icon">{{ suggestion.icon }}</div>
+                        <div class="suggestion-content">
+                            <h4 class="suggestion-title">{{ suggestion.title }}</h4>
+                            <p class="suggestion-description">{{ suggestion.description }}</p>
+                            <div class="suggestion-meta">
+                                <span class="suggestion-priority priority-{{ suggestion.priority }}">
+                                    {{ suggestion.priority|title }} Priority
+                                </span>
+                                <span class="suggestion-category">{{ suggestion.category|title }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="suggestions-footer">
+                    <p class="suggestions-note">
+                        <strong>Note:</strong> These suggestions are educational and non-medical. They are based on research-backed optimal study patterns and are meant to help you improve your learning efficiency.
+                    </p>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Charts Section -->
+            <div class="charts-section">
+                <div class="charts-grid">
+                    <!-- Weekly Study Hours Chart -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>📈 Weekly Study Hours</h3>
+                            <p class="chart-description">Track your study hours over the past week</p>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="weeklyStudyChart"></canvas>
+                        </div>
+                        <div class="chart-insight">
+                            <p><strong>Insight:</strong> Consistent daily study hours lead to better retention and productivity. Aim for 4-8 hours per day for optimal learning.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Sleep vs Productivity Chart -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>😴 Sleep vs Productivity</h3>
+                            <p class="chart-description">Correlation between sleep hours and productivity score</p>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="sleepProductivityChart"></canvas>
+                        </div>
+                        <div class="chart-insight">
+                            <p><strong>Insight:</strong> Research shows 7-9 hours of sleep maximizes productivity. Too little or too much sleep can negatively impact your performance.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Study History -->
+            <div class="recent-history-container">
+                <h3>📚 Recent Study History</h3>
+                <div id="recentHistoryList" class="history-list">
+                    <p class="loading-text">Loading recent study patterns...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 LearnSmart AI. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>
+

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Pattern Analyzer - LearnSmart AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <h1>LearnSmart AI</h1>
+            </div>
+            <div class="nav-links">
+                <a href="{{ url_for('dashboard') }}">Dashboard</a>
+                <a href="{{ url_for('study_pattern') }}">Study Pattern</a>
+                <a href="{{ url_for('academic_performance') }}">Academic Performance</a>
+                <a href="{{ url_for('chatbot') }}">AI Chatbot</a>
+                <a href="{{ url_for('history') }}">History</a>
+                <span>Welcome, {{ name }}!</span>
+                <a href="{{ url_for('logout') }}">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Study Pattern Analyzer Section -->
+    <section class="study-pattern-section">
+        <div class="container">
+            <h2 class="section-title">Study Pattern Analyzer</h2>
+            <p class="section-subtitle">Track your daily study habits and analyze your learning patterns</p>
+            
+            {% if error %}
+            <div class="alert alert-error">{{ error }}</div>
+            {% endif %}
+            
+            <div class="study-pattern-container">
+                <!-- Study Data Form -->
+                <div class="form-container">
+                    <h3 id="form-title">Add Daily Study Data</h3>
+                    <form id="studyPatternForm" class="study-form">
+                        <input type="hidden" id="pattern_id" name="pattern_id" value="">
+                        <div class="form-group">
+                            <label for="study_date">Date</label>
+                            <input type="date" id="study_date" name="study_date" required 
+                                   value="{{ today }}">
+                            <small class="form-hint">Select the date for this entry</small>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="study_hours">Study Hours</label>
+                                <input type="number" id="study_hours" name="study_hours" 
+                                       step="0.5" min="0" max="24" required>
+                                <small class="form-hint">Hours spent studying</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="sleep_hours">Sleep Hours</label>
+                                <input type="number" id="sleep_hours" name="sleep_hours" 
+                                       step="0.5" min="0" max="24" required>
+                                <small class="form-hint">Hours of sleep</small>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="break_time">Break Time (Hours)</label>
+                                <input type="number" id="break_time" name="break_time" 
+                                       step="0.5" min="0" max="24" required>
+                                <small class="form-hint">Hours of break/rest</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="screen_time">Screen Time (Hours)</label>
+                                <input type="number" id="screen_time" name="screen_time" 
+                                       step="0.5" min="0" max="24" required>
+                                <small class="form-hint">Total screen time</small>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="mood_level">Mood Level</label>
+                            <select id="mood_level" name="mood_level" required>
+                                <option value="">Select mood level</option>
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High">High</option>
+                            </select>
+                            <small class="form-hint">Your overall mood/energy level</small>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-block" id="submit-btn">Save Study Data</button>
+                        <button type="button" class="btn btn-secondary btn-block" id="cancel-btn" onclick="cancelEdit()" style="display: none; margin-top: 10px;">Cancel</button>
+                    </form>
+                    
+                    <div id="message" class="message"></div>
+                </div>
+                
+                <!-- Recent Study Patterns -->
+                <div class="history-container">
+                    <h3>Recent Study Patterns</h3>
+                    
+                    {% if recent_patterns %}
+                    <div class="patterns-list">
+                        {% for pattern in recent_patterns %}
+                        <div class="pattern-card" data-pattern-id="{{ pattern.id }}">
+                            <div class="pattern-header">
+                                <span class="pattern-date">{{ pattern.study_date }}</span>
+                                <span class="mood-badge mood-{{ pattern.mood_level.lower() }}">
+                                    {{ pattern.mood_level }}
+                                </span>
+                            </div>
+                            <div class="pattern-details">
+                                <div class="detail-item">
+                                    <span class="detail-label">Study:</span>
+                                    <span class="detail-value">{{ pattern.study_hours }}h</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Sleep:</span>
+                                    <span class="detail-value">{{ pattern.sleep_hours }}h</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Break:</span>
+                                    <span class="detail-value">{{ pattern.break_time }}h</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Screen:</span>
+                                    <span class="detail-value">{{ pattern.screen_time }}h</span>
+                                </div>
+                            </div>
+                            <div class="pattern-actions">
+                                <button class="btn-edit" onclick="editPattern({{ pattern.id }})" title="Edit pattern">
+                                    ✏️ Edit
+                                </button>
+                                <button class="btn-delete" onclick="deletePattern({{ pattern.id }}, '{{ pattern.study_date }}')" title="Delete pattern">
+                                    🗑️ Delete
+                                </button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="empty-state">
+                        <p>No study patterns recorded yet.</p>
+                        <p>Start tracking your study habits by filling the form above!</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 LearnSmart AI. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/study_pattern.js') }}"></script>
+</body>
+</html>
+
